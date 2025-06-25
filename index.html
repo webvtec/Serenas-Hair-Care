@@ -11,6 +11,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
+  <script 
+  src="https://www.paypal.com/sdk/js?client-id=BAAvLPHhL5XR9IKWroibiJNe4cSzmWSFydDB_iXv3ABDeiAlc8T0YnIjLt76eNYiJgBsWRytSFexqgPA1Q&components=hosted-buttons&disable-funding=venmo&currency=USD">
+  </script>
 
   <style>
     body {
@@ -313,11 +316,12 @@
   </select>
 </div>
 
-      <button type="submit">Book Now</button>
-    </form>
-
-    <p id="bookingMessage"></p>
-  </div>
+      <div id="paypal-container-JCP4B2BW86BEG"></div>
+<script>
+  paypal.HostedButtons({
+    hostedButtonId: "JCP4B2BW86BEG",
+  }).render("#paypal-container-JCP4B2BW86BEG")
+</script>
 
   <!-- ✅ Scripts -->
   <script>

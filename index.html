@@ -12,8 +12,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
   <script 
-  src="https://www.paypal.com/sdk/js?client-id=BAAvLPHhL5XR9IKWroibiJNe4cSzmWSFydDB_iXv3ABDeiAlc8T0YnIjLt76eNYiJgBsWRytSFexqgPA1Q&components=hosted-buttons&disable-funding=venmo&currency=USD">
-  </script>
+  src="https://www.paypal.com/sdk/js?client-id=BAAvLPHhL5XR9IKWroibiJNe4cSzmWSFydDB_iXv3ABDeiAlc8T0YnIjLt76eNYiJgBsWRytSFexqgPA1Q&currency=USD&intent=capture&commit=true&components=buttons">
+</script>
 
   <style>
     body {
@@ -320,23 +320,27 @@
 
 <script>
 paypal.Buttons({
+  style: {
+    layout: 'vertical',
+    color: 'gold',
+    shape: 'rect',
+    label: 'paypal'
+  },
   createOrder: function(data, actions) {
     return actions.order.create({
       purchase_units: [{
         amount: {
-          value: '20.00' // Set your price here
+          value: '20.00'
         }
       }]
     });
   },
   onApprove: function(data, actions) {
     return actions.order.capture().then(function(details) {
-      // ✅ Only after successful payment — now trigger the form submission
       submitBookingAfterPayment();
     });
   }
 }).render('#paypal-button-container');
-</script>
 
 
   <!-- ✅ Scripts -->

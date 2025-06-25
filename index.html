@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HAIR</title>
 
-  <!-- Firebase -->
+  <!-- Firebase (optional, still included) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
@@ -64,7 +65,7 @@
   <!-- Booking Section -->
   <div id="bookingSection" class="content-section">
     <h1>BOOK APPOINTMENT</h1>
-    <form onsubmit="submitBooking(event)">
+    <form onsubmit="event.preventDefault();">
       <label for="name">Name:</label>
       <input type="text" id="name" required />
       <label for="phone">Phone Number:</label>
@@ -89,7 +90,11 @@
         <option value="Silk Press">Silk Press</option>
         <option value="Loc Maintenance">Loc Maintenance</option>
       </select>
-      <button type="submit">Submit</button>
+
+      <!-- PayPal Button triggers data save + payment -->
+      <div onclick="storeBookingBeforePay()">
+        <div id="paypal-container-8KE7UNWHJD3N4"></div>
+      </div>
     </form>
     <p id="bookingMessage"></p>
   </div>
@@ -103,7 +108,6 @@
       messagingSenderId: "786223907397",
       appId: "1:786223907397:web:b42ecefaa7967807c6d92c"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
@@ -144,83 +148,15 @@
       document.getElementById('periodConfirmation').innerText = `You selected ${period}`;
     }
 
-    function convertToMinutes(timeStr) {
-      let [time, period] = timeStr.split(' ');
-      let [hours, minutes] = time.split(':').map(Number);
-      if (period === 'PM' && hours !== 12) hours += 12;
-      if (period === 'AM' && hours === 12) hours = 0;
-      return hours * 60 + minutes;
-    }
-
-    const businessHours = {
-      'Sunday': null,
-      'Monday': { open: '8:30 AM', close: '6:00 PM' },
-      'Tuesday': { open: '8:30 AM', close: '6:00 PM' },
-      'Wednesday': { open: '8:30 AM', close: '6:00 PM' },
-      'Thursday': { open: '8:30 AM', close: '6:00 PM' },
-      'Friday': { open: '9:00 AM', close: '7:00 PM' },
-      'Saturday': { open: '9:00 AM', close: '7:00 PM' }
-    };
-
-    function validateTimeSlot(date, selectedTime) {
-      const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
-      const business = businessHours[dayName];
-      if (!business) {
-        alert("We are closed on Sundays.");
-        return Promise.resolve(false);
-      }
-
-      const selectedMinutes = convertToMinutes(selectedTime);
-      const openMinutes = convertToMinutes(business.open);
-      const closeMinutes = convertToMinutes(business.close);
-
-      if (selectedMinutes < openMinutes || selectedMinutes >= closeMinutes) {
-        alert(`Business hours: ${business.open} - ${business.close}`);
-        return Promise.resolve(false);
-      }
-
-      return db.collection('unavailableDays').where('date', '==', date).get()
-        .then(snapshot => {
-          let isUnavailable = false;
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const start = convertToMinutes(data.startTime);
-            const end = convertToMinutes(data.endTime);
-            if (data.allDay || (selectedMinutes >= start && selectedMinutes <= end)) {
-              isUnavailable = true;
-            }
-          });
-          return !isUnavailable;
-        }).then(valid => {
-          if (!valid) return false;
-          return db.collection('bookings').where('date', '==', date).get().then(snapshot => {
-            const hairstyleType = document.getElementById('hairstyleType').value;
-            const buffer = hairstyleType !== 'NONE' ? 60 : 0;
-            for (let doc of snapshot.docs) {
-              let bookedMinutes = convertToMinutes(doc.data().time);
-              if (Math.abs(selectedMinutes - bookedMinutes) < buffer) return false;
-            }
-            return true;
-          });
-        });
-    }
-
-    function submitBooking(event) {
-      event.preventDefault();
+    function storeBookingBeforePay() {
       const name = document.getElementById('name').value;
       const phone = document.getElementById('phone').value;
       const date = document.getElementById('date').value;
       const time = `${document.getElementById('timeInput').value.trim()} ${document.getElementById('timePeriod').value}`;
       const hairstyle = document.getElementById('hairstyleType').value;
       const service = `Hairstyle: ${hairstyle}`;
-
-      validateTimeSlot(date, time).then(isAvailable => {
-        if (!isAvailable) return alert("Time not available.");
-        db.collection('bookings').add({ name, phone, date, time, service }).then(() => {
-          const msg = `Hello, I'd like to book:\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${service}`;
-          window.location.href = `https://wa.me/18763422293?text=${encodeURIComponent(msg)}`;
-        });
-      });
+      const bookingData = { name, phone, date, time, service };
+      localStorage.setItem("bookingData", JSON.stringify(bookingData));
     }
 
     function loadGallery(containerId) {
@@ -253,6 +189,14 @@
       loadGallery('galleryDisplay');
       document.getElementById('date').min = new Date().toISOString().split('T')[0];
     };
+  </script>
+
+  <!-- PayPal Button SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAvLPHhL5XR9IKWroibiJNe4cSzmWSFydDB_iXv3ABDeiAlc8T0YnIjLt76eNYiJgBsWRytSFexqgPA1Q&components=hosted-buttons&disable-funding=venmo&currency=USD"></script>
+  <script>
+    paypal.HostedButtons({
+      hostedButtonId: "8KE7UNWHJD3N4"
+    }).render("#paypal-container-8KE7UNWHJD3N4");
   </script>
 </body>
 </html>

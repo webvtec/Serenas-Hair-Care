@@ -316,12 +316,28 @@
   </select>
 </div>
 
-      <div id="paypal-container-JCP4B2BW86BEG"></div>
+      <div id="paypal-button-container"></div>
+
 <script>
-  paypal.HostedButtons({
-    hostedButtonId: "JCP4B2BW86BEG",
-  }).render("#paypal-container-JCP4B2BW86BEG")
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        amount: {
+          value: '20.00' // Set your price here
+        }
+      }]
+    });
+  },
+  onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+      // ✅ Only after successful payment — now trigger the form submission
+      submitBookingAfterPayment();
+    });
+  }
+}).render('#paypal-button-container');
 </script>
+
 
   <!-- ✅ Scripts -->
   <script>
@@ -632,6 +648,60 @@ function submitBooking(event) {
     });
 }
 
+    <script>
+function submitBookingAfterPayment() {
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const date = document.getElementById('date').value;
+  const timeInput = document.getElementById('timeInput').value.trim();
+  const timePeriod = document.getElementById('timePeriod').value;
+  const time = `${timeInput} ${timePeriod}`;
+
+  const pedicureType = document.getElementById('pedicureType').value;
+  const manicureType = document.getElementById('manicureType').value;
+  const nailExtensionType = document.getElementById('nailExtensionType').value;
+  let extensionLength = '';
+
+  if (nailExtensionType !== 'NONE') {
+    extensionLength = document.getElementById('extensionLength').value;
+  }
+
+  let service = `Pedicure: ${pedicureType}, Manicure: ${manicureType}`;
+  if (nailExtensionType !== 'NONE') {
+    service += `, Nail Extension: ${nailExtensionType} (${extensionLength})`;
+  }
+
+  validateTimeSlot(date, time)
+    .then((isAvailable) => {
+      if (!isAvailable) {
+        alert('This time is not available. Please choose another time.');
+        return;
+      }
+
+      db.collection('bookings').add({
+        name: name,
+        phone: phone,
+        date: date,
+        time: time,
+        service: service
+      })
+      .then(() => {
+        const message = `Hello, I would like to book an appointment.\n\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${service}`;
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappNumber = '18763422293';
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        window.location.href = whatsappUrl;
+      })
+      .catch((error) => {
+        console.error('Error saving booking:', error);
+        alert('Error saving booking. Please try again.');
+      });
+    })
+    .catch((error) => {
+      console.error('Error validating time:', error);
+      alert('Error validating time. Please try again.');
+    });
+}
   </script>
 
 </body>

@@ -16,224 +16,193 @@
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-  body {
-    font-family: 'Zilla Slab', serif;
-    margin: 0;
-    padding: 0;
-    background-color: #D0EFFF;
-  }
+    body {
+      font-family: 'Zilla Slab', serif;
+      margin: 0;
+      padding: 0;
+      background-color: #D0EFFF;
+    }
 
-  .header-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 48px;
-    background-color: #40E0D0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
+    .header-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background-color: #40E0D0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
 
-  .header-title {
-    font-size: 29px;
-    font-weight: bold;
-    background: linear-gradient(90deg, #ff4e50, #f9d423);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-    white-space: nowrap;
-    text-align: center;
-  }
+    .header-title {
+      font-size: 29px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff4e50, #f9d423);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+      white-space: nowrap;
+      text-align: center;
+    }
 
-  .menu-button, .location-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #FFD700;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    height: 48px;
-    width: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-  }
+    .menu-button, .location-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #FFD700;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      height: 48px;
+      width: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
 
-  .menu-button { left: 0; color: #FF69B4; }
-  .location-button { right: 0; color: red; text-decoration: none; }
+    .menu-button { left: 0; color: #FF69B4; }
+    .location-button { right: 0; color: red; text-decoration: none; }
 
-  .menu {
-    position: fixed;
-    top: 48px;
-    left: 0;
-    width: 150px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 20px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 999;
-  }
+    .menu {
+      position: fixed;
+      top: 48px;
+      left: 0;
+      width: 150px;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 20px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 999;
+    }
 
-  .menu.show {
-    transform: translateX(0);
-  }
+    .menu.show {
+      transform: translateX(0);
+    }
 
-  .menu a {
-    display: block;
-    color: white;
-    margin-bottom: 15px;
-    text-decoration: none;
-    font-weight: bold;
-    cursor: pointer;
-  }
+    .menu a {
+      display: block;
+      color: white;
+      margin-bottom: 15px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-  .menu a.admin-button {
-    background-color: #6200ea;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    text-align: center;
-  }
+    .menu a.admin-button {
+      background-color: #6200ea;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+    }
 
-  /* Center booking section */
-  #bookingSection.content-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 60px 20px;
-  }
+    .content-section {
+      display: none;
+      padding: 60px 20px;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  #bookingSection h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #6200ea;
-    width: 100%;
-    max-width: 400px;
-  }
+    .content-section.active {
+      display: flex;
+    }
 
-  #bookingForm {
-    width: 100%;
-    max-width: 360px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-  }
+    #bookingSection h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #6200ea;
+    }
 
-  #bookingForm label {
-    display: flex;
-    flex-direction: column;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #333;
-  }
+    #bookingForm {
+      width: 100%;
+      max-width: 360px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
 
-  form input,
-  form select,
-  form button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
+    #bookingForm label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+    }
 
-  #paypal-button-container {
-    margin-top: 10px;
-    width: 100%;
-  }
+    form input,
+    form select,
+    form button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
 
-  .time-select {
-    width: 60px;
-    cursor: pointer;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 8px 0;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    margin-right: 10px;
-  }
+    #paypal-button-container {
+      margin-top: 10px;
+      width: 100%;
+    }
 
-  .time-select.selected {
-    background-color: #6200ea;
-    color: white;
-    border-color: #6200ea;
-  }
+    .time-select {
+      width: 60px;
+      cursor: pointer;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 8px 0;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      margin-right: 10px;
+    }
 
-  .gallery-category {
-    margin-top: 40px;
-  }
+    .time-select.selected {
+      background-color: #6200ea;
+      color: white;
+      border: 2px solid #6200ea;
+    }
 
-  .gallery-category h3 {
-    text-align: center;
-    margin-bottom: 10px;
-    color: #6200ea;
-    text-transform: uppercase;
-  }
+    .gallery-category {
+      margin-top: 40px;
+    }
 
-  .gallery-wrapper {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 10px;
-  }
+    .gallery-category h3 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #6200ea;
+      text-transform: uppercase;
+    }
 
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 30px;
-  }
+    .gallery-wrapper {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 10px;
+    }
 
-  .gallery-grid img {
-    width: 100%;
-    height: 230px;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-  }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
 
-  /* Center the booking section content */
-  .content-section {
-    display: none;
-    padding: 60px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .content-section.active {
-    display: flex;
-  }
-
-  #bookingSection h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #6200ea;
-  }
-
-  /* Highlight selected AM/PM */
-  .time-select.selected {
-    background-color: #6200ea;
-    color: white;
-    border: 2px solid #6200ea;
-  }
-
-    .gallery-category { margin-top: 40px; }
-    .gallery-category h3 { text-align: center; margin-bottom: 10px; color: #6200ea; text-transform: uppercase; }
-    .gallery-wrapper { max-width: 1000px; margin: 0 auto; padding: 0 10px; }
-    .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
-    .gallery-grid img { width: 100%; height: 230px; object-fit: cover; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    .gallery-grid img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 
@@ -250,80 +219,49 @@
     <a onclick="login(); closeMenu();" class="admin-button">ADMIN</a>
   </div>
 
-  <!-- Gallery Section -->
   <div id="gallerySection" class="content-section active">
     <h2></h2>
     <div id="galleryDisplay"></div>
   </div>
 
-  <!-- Booking Section -->
   <div id="bookingSection" class="content-section">
     <h1>BOOK APPOINTMENT</h1>
     <form id="bookingForm" onsubmit="return false;">
-  <label>Name:
-    <input type="text" id="name" required />
-  </label>
-
-  <label>Phone Number:
-    <input type="text" id="phone" required />
-  </label>
-
-  <label>Preferred Date:
-    <input type="date" id="date" required />
-  </label>
-
-  <label>Preferred Time:
-    <input type="text" id="timeInput" placeholder="" maxlength="5" oninput="formatTimeInput()" required />
-  </label>
-
-  <div style="margin: 10px 0;">
-    <label>Choose AM or PM:</label><br />
-    <button type="button" onclick="selectPeriod('AM')" id="amBtn" class="time-select" style="margin-right: 10px;">AM</button>
-    <button type="button" onclick="selectPeriod('PM')" id="pmBtn" class="time-select">PM</button>
-    <div id="periodConfirmation" style="margin-bottom: 10px;"></div>
+      <label>Name:
+        <input type="text" id="name" required />
+      </label>
+      <label>Phone Number:
+        <input type="text" id="phone" required />
+      </label>
+      <label>Preferred Date:
+        <input type="date" id="date" required />
+      </label>
+      <label>Preferred Time:
+        <input type="text" id="timeInput" maxlength="5" oninput="formatTimeInput()" required />
+      </label>
+      <div style="margin: 10px 0;">
+        <label>Choose AM or PM:</label><br />
+        <button type="button" onclick="selectPeriod('AM')" id="amBtn" class="time-select">AM</button>
+        <button type="button" onclick="selectPeriod('PM')" id="pmBtn" class="time-select">PM</button>
+        <div id="periodConfirmation" style="margin-bottom: 10px;"></div>
+      </div>
+      <input type="hidden" id="timePeriod" value="" />
+      <label>Select Hairstyle Type:
+        <select id="hairstyleType" required>
+          <option value="NONE">NONE</option>
+          <option value="BRAIDS">BRAIDS</option>
+          <option value="LOCKS">LOCKS</option>
+          <option value="WIGS">WIGS</option>
+          <option value="CORN ROW">CORN ROW</option>
+          <option value="HAIR CUT">HAIR CUT</option>
+          <option value="LOC MAINTENANCE">LOC MAINTENANCE</option>
+        </select>
+      </label>
+      <div id="paypal-button-container"></div>
+    </form>
   </div>
 
-  <input type="hidden" id="timePeriod" value="" />
-
-  <label>Select Hairstyle Type:
-    <select id="hairstyleType" required>
-      <option value="NONE">NONE</option>
-      <option value="BRAIDS">BRAIDS</option>
-      <option value="LOCKS">LOCKS</option>
-      <option value="WIGS">WIGS</option>
-      <option value="CORN ROW">CORN ROW</option>
-      <option value="HAIR CUT">HAIR CUT</option>
-      <option value="LOC MAINTENANCE">LOC MAINTENANCE</option>
-    </select>
-  </label>
-
-  <div id="paypal-button-container"></div>
-</form>
-
   <script>
-
-    function checkFormComplete() {
-  const name = document.getElementById('name').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const date = document.getElementById('date').value.trim();
-  const timeInput = document.getElementById('timeInput').value.trim();
-  const period = document.getElementById('timePeriod').value.trim();
-  const hairstyle = document.getElementById('hairstyleType').value.trim();
-
-  const complete = name && phone && date && timeInput && period && hairstyle;
-  const paypalContainer = document.querySelector('#paypal-button-container');
-
-  // Disable PayPal button container if incomplete
-  paypalContainer.style.pointerEvents = complete ? 'auto' : 'none';
-  paypalContainer.style.opacity = complete ? '1' : '0.5';
-}
-
-// Watch inputs for changes
-['name', 'phone', 'date', 'timeInput', 'timePeriod', 'hairstyleType'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener('input', checkFormComplete);
-});
-
     const firebaseConfig = {
       apiKey: "AIzaSyAKXJ18jbcTbl-Q6OlfORc7iuLFX7rKCG4",
       authDomain: "dazzeld-nails.firebaseapp.com",
@@ -344,21 +282,18 @@
     }
 
     function showSection(sectionId) {
-  // Hide all content sections
-  document.querySelectorAll('.content-section').forEach(section => {
-    section.classList.remove('active');
-  });
-
-  // Show the requested one
-  const sectionToShow = document.getElementById(sectionId);
-  sectionToShow.classList.add('active');
-
-  // If gallery, load images
-  if (sectionId === 'gallerySection') {
-    loadGallery('galleryDisplay');
-    sectionToShow.scrollIntoView({ behavior: 'smooth' });
-  }
-}
+      document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      const sectionToShow = document.getElementById(sectionId);
+      if (sectionToShow) {
+        sectionToShow.classList.add('active');
+        if (sectionId === 'gallerySection') {
+          loadGallery('galleryDisplay');
+          sectionToShow.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
 
     function login() {
       const email = prompt('Enter admin email:');
@@ -377,23 +312,17 @@
     }
 
     function selectPeriod(period) {
-  document.getElementById('timePeriod').value = period;
-  document.getElementById('periodConfirmation').innerText = `You selected ${period}`;
-
-  // Reset both buttons
-  document.getElementById('amBtn').classList.remove('selected');
-  document.getElementById('pmBtn').classList.remove('selected');
-
-  // Highlight selected button
-  if (period === 'AM') {
-    document.getElementById('amBtn').classList.add('selected');
-  } else {
-    document.getElementById('pmBtn').classList.add('selected');
-  }
-
-  // Trigger validation check again
-  checkFormComplete();
-}
+      document.getElementById('timePeriod').value = period;
+      document.getElementById('periodConfirmation').innerText = `You selected ${period}`;
+      document.getElementById('amBtn').classList.remove('selected');
+      document.getElementById('pmBtn').classList.remove('selected');
+      if (period === 'AM') {
+        document.getElementById('amBtn').classList.add('selected');
+      } else {
+        document.getElementById('pmBtn').classList.add('selected');
+      }
+      checkFormComplete();
+    }
 
     function convertToMinutes(timeStr) {
       if (!timeStr) return null;
@@ -419,15 +348,11 @@
       const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
       const business = businessHours[dayName];
       if (!business) return false;
-
       const selectedMinutes = convertToMinutes(selectedTime);
       if (selectedMinutes === null) return false;
-
       const openMinutes = convertToMinutes(business.open);
       const closeMinutes = convertToMinutes(business.close);
-
       if (selectedMinutes < openMinutes || selectedMinutes >= closeMinutes) return false;
-
       const unavailSnapshot = await db.collection('unavailableDays').where('date', '==', date).get();
       for (const doc of unavailSnapshot.docs) {
         const data = doc.data();
@@ -435,16 +360,32 @@
         const end = convertToMinutes(data.endTime);
         if (data.allDay || (selectedMinutes >= start && selectedMinutes <= end)) return false;
       }
-
       const bookingsSnapshot = await db.collection('bookings').where('date', '==', date).get();
       const buffer = hairstyleType !== 'NONE' ? 60 : 0;
       for (const doc of bookingsSnapshot.docs) {
         const bookedMinutes = convertToMinutes(doc.data().time);
         if (Math.abs(selectedMinutes - bookedMinutes) < buffer) return false;
       }
-
       return true;
     }
+
+    function checkFormComplete() {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const date = document.getElementById('date').value.trim();
+      const timeInput = document.getElementById('timeInput').value.trim();
+      const period = document.getElementById('timePeriod').value.trim();
+      const hairstyle = document.getElementById('hairstyleType').value.trim();
+      const complete = name && phone && date && timeInput && period && hairstyle;
+      const paypalContainer = document.querySelector('#paypal-button-container');
+      paypalContainer.style.pointerEvents = complete ? 'auto' : 'none';
+      paypalContainer.style.opacity = complete ? '1' : '0.5';
+    }
+
+    ['name', 'phone', 'date', 'timeInput', 'timePeriod', 'hairstyleType'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', checkFormComplete);
+    });
 
     paypal.Buttons({
       createOrder: function(data, actions) {
@@ -457,19 +398,16 @@
         const timeInput = document.getElementById('timeInput').value.trim();
         const period = document.getElementById('timePeriod').value;
         const hairstyle = document.getElementById('hairstyleType').value;
-
         if (!name || !phone || !date || !timeInput || !period) {
           alert("Please complete the form.");
           return;
         }
-
         const time = `${timeInput} ${period}`;
         const isValid = await validateTimeSlot(date, time, hairstyle);
         if (!isValid) {
           alert("Selected time is not available.");
           return;
         }
-
         return actions.order.capture().then(async function(details) {
           await db.collection('bookings').add({ name, phone, date, time, service: hairstyle });
           const msg = `Hello, I'd like to book:%0AName: ${name}%0APhone: ${phone}%0ADate: ${date}%0ATime: ${time}%0AService: ${hairstyle}`;

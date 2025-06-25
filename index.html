@@ -57,9 +57,31 @@
     .content-section { display: none; padding: 60px 20px; }
     .content-section.active { display: block; }
 
-    form { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.1); }
-    form input, form select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; }
-    #paypal-button-container { margin-top: 10px; }
+    form {
+  max-width: 400px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+form input,
+form select,
+form button {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+#paypal-button-container {
+  margin-top: 10px;
+  width: 100%;
+}
 
     .gallery-category { margin-top: 40px; }
     .gallery-category h3 { text-align: center; margin-bottom: 10px; color: #6200ea; text-transform: uppercase; }

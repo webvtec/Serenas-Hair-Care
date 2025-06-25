@@ -478,38 +478,6 @@ function selectPeriod(period) {
   dateInput.min = today;
 });
 
-  function loadPayPalSDK(callback) {
-    const script = document.createElement('script');
-    script.src = "https://www.paypal.com/sdk/js?client-id=BAAvLPHhL5XR9IKWroibiJNe4cSzmWSFydDB_iXv3ABDeiAlc8T0YnIjLt76eNYiJgBsWRytSFexqgPA1Q&currency=USD&intent=capture&commit=true&components=buttons";
-    script.onload = callback;
-    document.head.appendChild(script);
-  }
-
-  loadPayPalSDK(function() {
-    paypal.Buttons({
-      style: {
-        layout: 'vertical',
-        color: 'gold',
-        shape: 'rect',
-        label: 'paypal'
-      },
-      createOrder: function(data, actions) {
-        return actions.order.create({
-          purchase_units: [{
-            amount: {
-              value: '20.00'
-            }
-          }]
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          submitBookingAfterPayment();
-        });
-      }
-    }).render('#paypal-button-container');
-  });
-
     function convertToMinutes(timeStr) {
   let [time, period] = timeStr.split(' ');
   let [hours, minutes] = time.split(':').map(Number);

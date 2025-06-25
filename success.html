@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    window.onload = () => {
+      const data = JSON.parse(localStorage.getItem("bookingData"));
+      if (data) {
+        const msg = `Hello, I'd like to book:\nName: ${data.name}\nPhone: ${data.phone}\nDate: ${data.date}\nTime: ${data.time}\nService: ${data.service}`;
+        window.location.href = `https://wa.me/18763422293?text=${encodeURIComponent(msg)}`;
+      } else {
+        document.body.innerText = "No booking info found.";
+      }
+    };
+  </script>
+</head>
+<body>
+  <p>Redirecting to WhatsApp...</p>
+</body>
+</html>

@@ -54,17 +54,27 @@
       text-align: center;
     }
 
-    .content-section { display: none; padding: 60px 20px; }
-    .content-section.active { display: block; }
+    .content-section {
+  display: none;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
 
-    form {
-  max-width: 400px;
-  margin: 0 auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
+.content-section.active {
+  display: flex;
+}
+
+form {
+  max-width: 400px;
+  width: 100%;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 form input,
@@ -81,6 +91,11 @@ form button {
 #paypal-button-container {
   margin-top: 10px;
   width: 100%;
+}
+    #bookingSection h1 {
+  text-align: center;
+  color: #6200ea;
+  margin-bottom: 20px;
 }
 
     .gallery-category { margin-top: 40px; }

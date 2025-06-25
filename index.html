@@ -116,6 +116,29 @@
   </div>
 
   <script>
+
+    function checkFormComplete() {
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const date = document.getElementById('date').value.trim();
+  const timeInput = document.getElementById('timeInput').value.trim();
+  const period = document.getElementById('timePeriod').value.trim();
+  const hairstyle = document.getElementById('hairstyleType').value.trim();
+
+  const complete = name && phone && date && timeInput && period && hairstyle;
+  const paypalContainer = document.querySelector('#paypal-button-container');
+
+  // Disable PayPal button container if incomplete
+  paypalContainer.style.pointerEvents = complete ? 'auto' : 'none';
+  paypalContainer.style.opacity = complete ? '1' : '0.5';
+}
+
+// Watch inputs for changes
+['name', 'phone', 'date', 'timeInput', 'timePeriod', 'hairstyleType'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', checkFormComplete);
+});
+
     const firebaseConfig = {
       apiKey: "AIzaSyAKXJ18jbcTbl-Q6OlfORc7iuLFX7rKCG4",
       authDomain: "dazzeld-nails.firebaseapp.com",

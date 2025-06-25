@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HAIR</title>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <script src="https://www.paypal.com/sdk/js?client-id=AXR_nloh50ctu4cInyq9P-NwDyqQOnXmcMPiO_s2MXf5agWoKer9XTp8KmOwVl1_DEsNMLNLqtwrKmLp&currency=USD"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body { font-family: 'Zilla Slab', serif; margin: 0; padding: 0; background-color: #D0EFFF; }
     .header-bar { position: fixed; top: 0; left: 0; right: 0; height: 48px; background-color: #40E0D0; display: flex; align-items: center; justify-content: center; z-index: 1000; }
@@ -34,27 +34,34 @@
     <div class="header-title">HAIR</div>
     <a href="https://maps.app.goo.gl/AbaeaUhLcHuvZyRM9" target="_blank" class="location-button">📍</a>
   </div>
+
   <div class="menu" id="menu">
     <a onclick="showSection('bookingSection'); closeMenu();">📆 BOOKING</a>
     <a onclick="login(); closeMenu();" class="admin-button">ADMIN</a>
   </div>
+
   <div id="bookingSection" class="content-section active">
     <h1>BOOK APPOINTMENT</h1>
-    <form id="bookingForm">
+    <form id="bookingForm" onsubmit="return false;">
       <input type="text" id="name" placeholder="Name" required />
       <input type="text" id="phone" placeholder="Phone Number" required />
       <input type="date" id="date" required />
-      <input type="text" id="time" placeholder="Time (e.g., 10:30 AM)" required />
-      <select id="hairstyleType">
+      <input type="text" id="time" placeholder="Time (e.g., 10:30)" maxlength="5" oninput="formatTimeInput()" required />
+      <select id="hairstyleType" required>
         <option value="NONE">NONE</option>
         <option value="BRAIDS">BRAIDS</option>
         <option value="LOCKS">LOCKS</option>
         <option value="WIGS">WIGS</option>
+        <option value="CORN ROW">CORN ROW</option>
+        <option value="HAIR CUT">HAIR CUT</option>
+        <option value="LOC MAINTENANCE">LOC MAINTENANCE</option>
       </select>
       <div id="paypal-button-container"></div>
     </form>
   </div>
+
   <script>
+    // Firebase setup
     const firebaseConfig = {
       apiKey: "AIzaSyChRsOpY7cKI9bZRShd2xdaI2c32PMegao",
       authDomain: "ttthairstylist-walk-in-pay.firebaseapp.com",
@@ -66,6 +73,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // Menu toggle
     function toggleMenu() {
       document.getElementById('menu').classList.toggle('show');
     }
@@ -84,31 +92,161 @@
         .catch(e => alert('Auth failed: ' + e.message));
     }
 
+    // Format time input as user types (3 or 4 digits)
+    function formatTimeInput() {
+      let input = document.getElementById('time');
+      let val = input.value.replace(/\D/g, '');
+      if (val.length === 3) {
+        input.value = val.slice(0,1) + ':' + val.slice(1);
+      } else if (val.length === 4) {
+        input.value = val.slice(0,2) + ':' + val.slice(2);
+      } else {
+        input.value = val;
+      }
+    }
+
+    // Convert time string (HH:MM AM/PM) to minutes since midnight
+    function convertToMinutes(timeStr) {
+      if (!timeStr) return null;
+      let [time, period] = timeStr.split(' ');
+      if (!period) period = 'AM'; // Default to AM if none provided
+      let [hours, minutes] = time.split(':').map(Number);
+      if (period.toUpperCase() === 'PM' && hours !== 12) hours += 12;
+      if (period.toUpperCase() === 'AM' && hours === 12) hours = 0;
+      return hours * 60 + minutes;
+    }
+
+    // Business hours per day
+    const businessHours = {
+      'Sunday': null,
+      'Monday': { open: '8:30 AM', close: '6:00 PM' },
+      'Tuesday': { open: '8:30 AM', close: '6:00 PM' },
+      'Wednesday': { open: '8:30 AM', close: '6:00 PM' },
+      'Thursday': { open: '8:30 AM', close: '6:00 PM' },
+      'Friday': { open: '9:00 AM', close: '7:00 PM' },
+      'Saturday': { open: '9:00 AM', close: '7:00 PM' }
+    };
+
+    // Validate time slot availability with buffer based on hairstyle
+    async function validateTimeSlot(date, time, hairstyle) {
+      const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
+      const business = businessHours[dayName];
+      if (!business) {
+        alert("We are closed on Sundays.");
+        return false;
+      }
+
+      // Add default AM if no period
+      if (!time.match(/AM|PM/i)) time += ' AM';
+
+      const selectedMinutes = convertToMinutes(time);
+      const openMinutes = convertToMinutes(business.open);
+      const closeMinutes = convertToMinutes(business.close);
+
+      if (selectedMinutes < openMinutes || selectedMinutes >= closeMinutes) {
+        alert(`Business hours: ${business.open} - ${business.close}`);
+        return false;
+      }
+
+      // Check unavailableDays
+      const unavailableSnapshot = await db.collection('unavailableDays').where('date', '==', date).get();
+      for (const doc of unavailableSnapshot.docs) {
+        const data = doc.data();
+        const start = convertToMinutes(data.startTime);
+        const end = convertToMinutes(data.endTime);
+        if (data.allDay || (selectedMinutes >= start && selectedMinutes <= end)) {
+          alert('Selected time is unavailable.');
+          return false;
+        }
+      }
+
+      // Buffer time in minutes based on hairstyle
+      const bufferMap = {
+        'NONE': 0,
+        'BRAIDS': 60,
+        'LOCKS': 60,
+        'WIGS': 60,
+        'CORN ROW': 45,
+        'HAIR CUT': 30,
+        'LOC MAINTENANCE': 45
+      };
+      const buffer = bufferMap[hairstyle] || 0;
+
+      // Check existing bookings with buffer
+      const bookingsSnapshot = await db.collection('bookings').where('date', '==', date).get();
+      for (const doc of bookingsSnapshot.docs) {
+        const bookedTime = doc.data().time;
+        let bookedMinutes = convertToMinutes(bookedTime);
+        if (Math.abs(selectedMinutes - bookedMinutes) < buffer) {
+          alert(`The time slot conflicts with another booking. Please choose a different time.`);
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    // Render PayPal Button with payment + WhatsApp redirect after successful payment
     paypal.Buttons({
       createOrder: function(data, actions) {
         return actions.order.create({
-          purchase_units: [{ amount: { value: '10.00' } }]
+          purchase_units: [{ amount: { value: '10.00' } }] // Set your price here
         });
       },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          const name = document.getElementById('name').value;
-          const phone = document.getElementById('phone').value;
+      onApprove: async function(data, actions) {
+        try {
+          const details = await actions.order.capture();
+
+          // Gather booking info
+          const name = document.getElementById('name').value.trim();
+          const phone = document.getElementById('phone').value.trim();
           const date = document.getElementById('date').value;
-          const time = document.getElementById('time').value;
+          let time = document.getElementById('time').value.trim();
           const hairstyle = document.getElementById('hairstyleType').value;
 
-          db.collection('bookings').add({ name, phone, date, time, service: hairstyle }).then(() => {
-            const msg = `Hello, I'd like to book:\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${hairstyle}`;
-            window.location.href = `https://wa.me/18763422293?text=${encodeURIComponent(msg)}`;
+          if (!name || !phone || !date || !time) {
+            alert('Please fill all booking fields before payment.');
+            return;
+          }
+
+          // Append AM if missing
+          if (!time.match(/AM|PM/i)) time += ' AM';
+
+          // Validate time slot before saving booking
+          const valid = await validateTimeSlot(date, time, hairstyle);
+          if (!valid) return;
+
+          // Save booking in Firestore
+          await db.collection('bookings').add({
+            name,
+            phone,
+            date,
+            time,
+            service: hairstyle,
+            paymentDetails: details
           });
-        });
+
+          // Prepare WhatsApp message
+          const msg = `Hello, I'd like to book:\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${hairstyle}`;
+
+          // Redirect to WhatsApp with prefilled message
+          window.location.href = `https://wa.me/18763422293?text=${encodeURIComponent(msg)}`;
+
+        } catch (error) {
+          alert('Payment failed or booking could not be processed. Please try again.');
+          console.error(error);
+        }
       },
       onError: function(err) {
         alert('An error occurred during payment. Please try again.');
         console.error(err);
       }
     }).render('#paypal-button-container');
+
+    // Set date min to today
+    window.onload = () => {
+      document.getElementById('date').min = new Date().toISOString().split('T')[0];
+    };
   </script>
 </body>
 </html>

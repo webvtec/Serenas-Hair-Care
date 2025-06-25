@@ -10,10 +10,11 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <form onsubmit="submitBooking(event)">
+
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
   <script 
   src="https://www.paypal.com/sdk/js?client-id=BAAvLPHhL5XR9IKWroibiJNe4cSzmWSFydDB_iXv3ABDeiAlc8T0YnIjLt76eNYiJgBsWRytSFexqgPA1Q&currency=USD&intent=capture&commit=true&components=buttons">
-</script>
 
   <style>
     body {
@@ -603,7 +604,6 @@ function submitBooking(event) {
   const pedicureType = document.getElementById('pedicureType').value;
   const manicureType = document.getElementById('manicureType').value;
 
-  // ✅ New: Get Nail Extension Type and Length
   const nailExtensionType = document.getElementById('nailExtensionType').value;
   let extensionLength = '';
 
@@ -611,7 +611,6 @@ function submitBooking(event) {
     extensionLength = document.getElementById('extensionLength').value;
   }
 
-  // ✅ Build Service Description
   let service = `Pedicure: ${pedicureType}, Manicure: ${manicureType}`;
   if (nailExtensionType !== 'NONE') {
     service += `, Nail Extension: ${nailExtensionType} (${extensionLength})`;
@@ -624,7 +623,6 @@ function submitBooking(event) {
         return;
       }
 
-      // Save booking to Firestore
       db.collection('bookings').add({
         name: name,
         phone: phone,
@@ -632,19 +630,18 @@ function submitBooking(event) {
         time: time,
         service: service
       })
-        .then(() => {
-          // Send WhatsApp message after saving booking
-          const message = `Hello, I would like to book an appointment.\n\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${service}`;
-          const encodedMessage = encodeURIComponent(message);
-          const whatsappNumber = '18763422293';
-          const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      .then(() => {
+        const message = `Hello, I would like to book an appointment.\n\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${service}`;
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappNumber = '18763422293';
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
-          window.location.href = whatsappUrl;
-        })
-        .catch((error) => {
-          console.error('Error saving booking:', error);
-          alert('Error saving booking. Please try again.');
-        });
+        window.location.href = whatsappUrl;
+      })
+      .catch((error) => {
+        console.error('Error saving booking:', error);
+        alert('Error saving booking. Please try again.');
+      });
     })
     .catch((error) => {
       console.error('Error during time validation:', error);

@@ -344,10 +344,17 @@
     }
 
     function showSection(sectionId) {
-      document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
-      document.getElementById(sectionId).classList.add('active');
-      if (sectionId === 'gallerySection') loadGallery('galleryDisplay');
-    }
+  document.querySelectorAll('.content-section').forEach(section =>
+    section.classList.remove('active')
+  );
+  const sectionToShow = document.getElementById(sectionId);
+  sectionToShow.classList.add('active');
+
+  if (sectionId === 'gallerySection') {
+    loadGallery('galleryDisplay');
+    sectionToShow.scrollIntoView({ behavior: 'smooth' });
+  }
+}
 
     function login() {
       const email = prompt('Enter admin email:');

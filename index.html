@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HAIR</title>
 
-  <!-- Firebase (optional, still included) -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-
+  
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
@@ -65,7 +65,7 @@
   <!-- Booking Section -->
   <div id="bookingSection" class="content-section">
     <h1>BOOK APPOINTMENT</h1>
-    <form onsubmit="event.preventDefault();">
+    <form id="bookingForm" onsubmit="return false;">
       <label for="name">Name:</label>
       <input type="text" id="name" required />
       <label for="phone">Phone Number:</label>
@@ -90,12 +90,10 @@
         <option value="Silk Press">Silk Press</option>
         <option value="Loc Maintenance">Loc Maintenance</option>
       </select>
-
-      <!-- PayPal Button triggers data save + payment -->
-      <div onclick="storeBookingBeforePay()">
-        <div id="paypal-container-8KE7UNWHJD3N4"></div>
-      </div>
     </form>
+
+    <div id="paypal-button-container"></div>
+
     <p id="bookingMessage"></p>
   </div>
 
@@ -148,17 +146,6 @@
       document.getElementById('periodConfirmation').innerText = `You selected ${period}`;
     }
 
-    function storeBookingBeforePay() {
-      const name = document.getElementById('name').value;
-      const phone = document.getElementById('phone').value;
-      const date = document.getElementById('date').value;
-      const time = `${document.getElementById('timeInput').value.trim()} ${document.getElementById('timePeriod').value}`;
-      const hairstyle = document.getElementById('hairstyleType').value;
-      const service = `Hairstyle: ${hairstyle}`;
-      const bookingData = { name, phone, date, time, service };
-      localStorage.setItem("bookingData", JSON.stringify(bookingData));
-    }
-
     function loadGallery(containerId) {
       const container = document.getElementById(containerId);
       db.collection('gallery').onSnapshot(snapshot => {
@@ -191,12 +178,63 @@
     };
   </script>
 
-  <!-- PayPal Button SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAvLPHhL5XR9IKWroibiJNe4cSzmWSFydDB_iXv3ABDeiAlc8T0YnIjLt76eNYiJgBsWRytSFexqgPA1Q&components=hosted-buttons&disable-funding=venmo&currency=USD"></script>
+  <!-- PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAvLPHhL5XR9IKWroibiJNe4cSzmWSFydDB_iXv3ABDeiAlc8T0YnIjLt76eNYiJgBsWRytSFexqgPA1Q&currency=USD"></script>
   <script>
-    paypal.HostedButtons({
-      hostedButtonId: "8KE7UNWHJD3N4"
-    }).render("#paypal-container-8KE7UNWHJD3N4");
+    paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color:  'blue',
+        shape:  'rect',
+        label:  'pay',
+      },
+      createOrder: function(data, actions) {
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const date = document.getElementById('date').value;
+        const timeInput = document.getElementById('timeInput').value.trim();
+        const timePeriod = document.getElementById('timePeriod').value;
+        const hairstyle = document.getElementById('hairstyleType').value;
+
+        if (!name || !phone || !date || !timeInput) {
+          alert('Please fill out all required fields before paying.');
+          return actions.reject();
+        }
+
+        const time = `${timeInput} ${timePeriod}`;
+        const service = `Hairstyle: ${hairstyle}`;
+
+        // Save booking info temporarily
+        localStorage.setItem('bookingData', JSON.stringify({ name, phone, date, time, service }));
+
+        // Create PayPal order (fixed price)
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: '20.00' // Change price if needed
+            }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          const bookingData = JSON.parse(localStorage.getItem('bookingData'));
+          if (!bookingData) {
+            alert('Booking data missing.');
+            return;
+          }
+          const msg = `Hello, I'd like to book:\nName: ${bookingData.name}\nPhone: ${bookingData.phone}\nDate: ${bookingData.date}\nTime: ${bookingData.time}\nService: ${bookingData.service}`;
+          window.location.href = `https://wa.me/18763422293?text=${encodeURIComponent(msg)}`;
+        });
+      },
+      onCancel: function() {
+        alert('Payment cancelled.');
+      },
+      onError: function(err) {
+        alert('An error occurred during payment. Please try again.');
+        console.error(err);
+      }
+    }).render('#paypal-button-container');
   </script>
 </body>
 </html>

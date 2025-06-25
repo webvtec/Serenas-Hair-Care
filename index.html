@@ -344,12 +344,16 @@
     }
 
     function showSection(sectionId) {
-  document.querySelectorAll('.content-section').forEach(section =>
-    section.classList.remove('active')
-  );
+  // Hide all content sections
+  document.querySelectorAll('.content-section').forEach(section => {
+    section.classList.remove('active');
+  });
+
+  // Show the requested one
   const sectionToShow = document.getElementById(sectionId);
   sectionToShow.classList.add('active');
 
+  // If gallery, load images
   if (sectionId === 'gallerySection') {
     loadGallery('galleryDisplay');
     sectionToShow.scrollIntoView({ behavior: 'smooth' });

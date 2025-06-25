@@ -265,8 +265,8 @@
 
 <input type="hidden" id="timePeriod" value="AM" />
 
-      <label for="pedicureType">Select Pedicure Type:</label>
-     <select id="pedicureType">
+      <label for="pedicureType">Select Hairstyle Type:</label>
+     <select id="HairstyleType">
   <option value="NONE">NONE</option>
   <option value="Regular Pedicure">Regular Pedicure</option>
   <option value="Spa Pedicure">Spa Pedicure</option>
@@ -280,9 +280,6 @@
   <option value="Athletic Pedicure">Athletic Pedicure</option>
 </select>
 </div>
-
-      <button type="submit">Book Now</button>
-    </form>
 
     <p id="bookingMessage"></p>
   </div>
@@ -368,17 +365,6 @@ function selectPeriod(period) {
   confirmation.innerText = `You selected ${period}`;
   confirmation.style.fontWeight = 'bold';
   confirmation.style.marginBottom = '10px';
-}
-
-    function showExtensionLengthOptions() {
-  const extensionType = document.getElementById('nailExtensionType').value;
-  const lengthContainer = document.getElementById('extensionLengthContainer');
-
-  if (extensionType !== 'NONE') {
-    lengthContainer.style.display = 'block';
-  } else {
-    lengthContainer.style.display = 'none';
-  }
 }
 
     function loadGallery(containerId) {
@@ -506,13 +492,11 @@ function validateTimeSlot(date, selectedTime) {
         .then((querySnapshot) => {
 
           // Calculate buffer based on selected service
-          const pedicureType = document.getElementById('pedicureType').value;
-          const manicureType = document.getElementById('manicureType').value;
-          const nailExtensionType = document.getElementById('nailExtensionType').value;
+          const pedicureType = document.getElementById('HairstyleType').value;
 
           let buffer = 0;
 
-          if (pedicureType !== 'NONE') {
+          if (HairstyleType !== 'NONE') {
             buffer = 90;
           } else if (manicureType !== 'NONE') {
             buffer = 45;

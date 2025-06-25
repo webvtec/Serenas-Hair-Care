@@ -69,6 +69,32 @@ form button {
   margin-top: 10px;
   width: 100%;
 }
+    <style>
+  /* Center the booking section content */
+  .content-section {
+    display: none;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .content-section.active {
+    display: flex;
+  }
+
+  #bookingSection h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #6200ea;
+  }
+
+  /* Highlight selected AM/PM */
+  .time-select.selected {
+    background-color: #6200ea;
+    color: white;
+    border: 2px solid #6200ea;
+  }
 
     .gallery-category { margin-top: 40px; }
     .gallery-category h3 { text-align: center; margin-bottom: 10px; color: #6200ea; text-transform: uppercase; }
@@ -207,11 +233,23 @@ form button {
     }
 
     function selectPeriod(period) {
-      document.getElementById('timePeriod').value = period;
-      document.getElementById('periodConfirmation').innerText = `You selected ${period}`;
-      document.getElementById('amBtn').classList.toggle('selected', period === 'AM');
-      document.getElementById('pmBtn').classList.toggle('selected', period === 'PM');
-    }
+  document.getElementById('timePeriod').value = period;
+  document.getElementById('periodConfirmation').innerText = `You selected ${period}`;
+
+  // Reset both buttons
+  document.getElementById('amBtn').classList.remove('selected');
+  document.getElementById('pmBtn').classList.remove('selected');
+
+  // Highlight selected button
+  if (period === 'AM') {
+    document.getElementById('amBtn').classList.add('selected');
+  } else {
+    document.getElementById('pmBtn').classList.add('selected');
+  }
+
+  // Trigger validation check again
+  checkFormComplete();
+}
 
     function convertToMinutes(timeStr) {
       if (!timeStr) return null;

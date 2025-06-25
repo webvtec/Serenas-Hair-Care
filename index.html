@@ -114,28 +114,45 @@ form button {
   <div id="bookingSection" class="content-section">
     <h1>BOOK APPOINTMENT</h1>
     <form id="bookingForm" onsubmit="return false;">
-      <input type="text" id="name" placeholder="NAME" required />
-      <input type="text" id="phone" placeholder="PHONE NUMBER" required />
-      <input type="date" id="date" required />
-      <input type="text" id="timeInput" placeholder="TIME" maxlength="5" oninput="formatTimeInput()" required />
-      <div style="margin: 10px 0;">
-        <button type="button" onclick="selectPeriod('AM')" id="amBtn" style="margin-right: 10px;">AM</button>
-        <button type="button" onclick="selectPeriod('PM')" id="pmBtn">PM</button>
-        <div id="periodConfirmation" style="margin-bottom: 10px;"></div>
-      </div>
-      <input type="hidden" id="timePeriod" value="" />
-      <select id="hairstyleType" required>
-        <option value="NONE">NONE</option>
-        <option value="BRAIDS">BRAIDS</option>
-        <option value="LOCKS">LOCKS</option>
-        <option value="WIGS">WIGS</option>
-        <option value="CORN ROW">CORN ROW</option>
-        <option value="HAIR CUT">HAIR CUT</option>
-        <option value="LOC MAINTENANCE">LOC MAINTENANCE</option>
-      </select>
-      <div id="paypal-button-container"></div>
-    </form>
+  <label>Name:
+    <input type="text" id="name" required />
+  </label>
+
+  <label>Phone Number:
+    <input type="text" id="phone" required />
+  </label>
+
+  <label>Preferred Date:
+    <input type="date" id="date" required />
+  </label>
+
+  <label>Preferred Time:
+    <input type="text" id="timeInput" placeholder="e.g. 9:30" maxlength="5" oninput="formatTimeInput()" required />
+  </label>
+
+  <div style="margin: 10px 0;">
+    <label>Choose AM or PM:</label><br />
+    <button type="button" onclick="selectPeriod('AM')" id="amBtn" class="time-select" style="margin-right: 10px;">AM</button>
+    <button type="button" onclick="selectPeriod('PM')" id="pmBtn" class="time-select">PM</button>
+    <div id="periodConfirmation" style="margin-bottom: 10px;"></div>
   </div>
+
+  <input type="hidden" id="timePeriod" value="" />
+
+  <label>Select Hairstyle Type:
+    <select id="hairstyleType" required>
+      <option value="NONE">NONE</option>
+      <option value="BRAIDS">BRAIDS</option>
+      <option value="LOCKS">LOCKS</option>
+      <option value="WIGS">WIGS</option>
+      <option value="CORN ROW">CORN ROW</option>
+      <option value="HAIR CUT">HAIR CUT</option>
+      <option value="LOC MAINTENANCE">LOC MAINTENANCE</option>
+    </select>
+  </label>
+
+  <div id="paypal-button-container"></div>
+</form>
 
   <script>
 

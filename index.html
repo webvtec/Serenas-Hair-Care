@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HAIR</title>
+  <title>HAIR CARE</title>
 
-  <!-- Firebase -->
+  <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-
-  <!-- PayPal -->
-  <script src="https://www.paypal.com/sdk/js?client-id=AXR_nloh50ctu4cInyq9P-NwDyqQOnXmcMPiO_s2MXf5agWoKer9XTp8KmOwVl1_DEsNMLNLqtwrKmLp&currency=USD"></script>
-
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
@@ -20,7 +17,8 @@
       font-family: 'Zilla Slab', serif;
       margin: 0;
       padding: 0;
-      background-color: #D0EFFF;
+      background-color: #FFFFFF;
+      overflow-x: hidden;
     }
 
     .header-bar {
@@ -29,7 +27,7 @@
       left: 0;
       right: 0;
       height: 48px;
-      background-color: #40E0D0;
+      background-color: #FFD1DC;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -37,9 +35,10 @@
     }
 
     .header-title {
-      font-size: 29px;
+      font-family: 'Zilla Slab', serif;
+      font-size: 26px;
       font-weight: bold;
-      background: linear-gradient(90deg, #ff4e50, #f9d423);
+      background: linear-gradient(90deg, #ff4e50, #f9d423, #24c6dc, #abecd6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
@@ -47,13 +46,15 @@
       text-align: center;
     }
 
-    .menu-button, .location-button {
+    .menu-button {
       position: absolute;
+      left: 0;
       top: 50%;
       transform: translateY(-50%);
-      background-color: #FFD700;
+      background-color: #98FF98;
+      color: #FF69B4;
       border: none;
-      padding: 0;
+      border-radius: 0px;
       cursor: pointer;
       height: 48px;
       width: 45px;
@@ -61,10 +62,8 @@
       align-items: center;
       justify-content: center;
       font-size: 22px;
+      padding: 0;
     }
-
-    .menu-button { left: 0; color: #FF69B4; }
-    .location-button { right: 0; color: red; text-decoration: none; }
 
     .menu {
       position: fixed;
@@ -72,10 +71,12 @@
       left: 0;
       width: 150px;
       background-color: rgba(0, 0, 0, 0.8);
-      color: #fff;
+      color: #98FF98;
       padding: 20px;
       transform: translateX(-100%);
       transition: transform 0.3s ease;
+      height: auto;
+      min-height: 100px;
       z-index: 999;
     }
 
@@ -92,49 +93,19 @@
       cursor: pointer;
     }
 
-    .menu a.admin-button {
-      background-color: #6200ea;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
+    h1 {
       text-align: center;
-    }
-
-    .content-section {
-      display: none;
-      padding: 60px 20px;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .content-section.active {
-      display: flex;
-    }
-
-    #bookingSection h1 {
-      text-align: center;
-      margin-bottom: 20px;
       color: #6200ea;
+      margin-top: 80px;
     }
 
-    #bookingForm {
-      width: 100%;
-      max-width: 360px;
-      background: white;
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: white;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #bookingForm label {
-      display: flex;
-      flex-direction: column;
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: #333;
     }
 
     form input,
@@ -142,66 +113,112 @@
     form button {
       width: 100%;
       padding: 12px;
-      margin-top: 5px;
       margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 5px;
       box-sizing: border-box;
     }
 
-    #paypal-button-container {
-      margin-top: 10px;
-      width: 100%;
-    }
-
-    .time-select {
-      width: 60px;
-      cursor: pointer;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 8px 0;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      margin-right: 10px;
-    }
-
-    .time-select.selected {
+    form button {
       background-color: #6200ea;
       color: white;
-      border: 2px solid #6200ea;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    form button:hover {
+      background-color: #3700b3;
+    }
+
+    #bookingMessage {
+      text-align: center;
+      font-weight: bold;
+      color: green;
+      margin-top: 20px;
     }
 
     .gallery-category {
       margin-top: 40px;
+      padding: 0 10px;
     }
 
     .gallery-category h3 {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      font-size: 22px;
       color: #6200ea;
       text-transform: uppercase;
     }
 
     .gallery-wrapper {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 10px;
-    }
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 15px 3px 0; /* ⬅️ Added top padding */
+  box-sizing: border-box;
+}
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 15px;
       margin-bottom: 30px;
+      width: 100%;
     }
 
     .gallery-grid img {
       width: 100%;
-      height: 230px;
+      max-height: 160px;
       object-fit: cover;
       border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    .menu a.admin-button {
+      background-color: #6200ea;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: bold;
+      display: block;
+      margin: 50px auto 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-align: center;
+      width: fit-content;
+    }
+
+    .menu a.admin-button:hover {
+      background-color: #3700b3;
+    }
+
+    .location-button {
+      position: absolute;
+      right: 0px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #98FF98;
+      color: red;
+      border: none;
+      padding: 0;
+      border-radius: 0px;
+      cursor: pointer;
+      height: 48px;
+      width: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -209,58 +226,49 @@
 <body>
   <div class="header-bar">
     <button class="menu-button" onclick="toggleMenu()">☰</button>
-    <div class="header-title">HAIR</div>
-    <a href="https://maps.app.goo.gl/Zve6LbjCAQSx8fjZ8" target="_blank" class="location-button">📍</a>
+    <div class="header-title">HAIR CARE</div>
+    <a href="https://maps.app.goo.gl/iz8nF9uqjWqj3uVi9" target="_blank" class="location-button">📍</a>
   </div>
 
   <div class="menu" id="menu">
-    <a onclick="showSection('gallerySection'); closeMenu();">💇🏽‍♀️ HAIR STYLES</a>
+    <a onclick="showSection('gallerySection'); closeMenu();">💅🏽 DESIGNS</a>
     <a onclick="showSection('bookingSection'); closeMenu();">📆 BOOKING</a>
     <a onclick="login(); closeMenu();" class="admin-button">ADMIN</a>
   </div>
 
   <div id="gallerySection" class="content-section active">
-    <h2></h2>
-    <div id="galleryDisplay"></div>
+    <div id="galleryDisplay" class="gallery-wrapper"></div>
   </div>
 
   <div id="bookingSection" class="content-section">
     <h1>BOOK APPOINTMENT</h1>
-    <form id="bookingForm" onsubmit="return false;">
-      <label>Name:
-        <input type="text" id="name" required />
-      </label>
-      <label>Phone Number:
-        <input type="text" id="phone" required />
-      </label>
-      <label>Preferred Date:
-        <input type="date" id="date" required />
-      </label>
-      <label>Preferred Time:
-        <input type="text" id="timeInput" maxlength="5" oninput="formatTimeInput()" required />
-      </label>
-      <div style="margin: 10px 0;">
-        <label>Choose AM or PM:</label><br />
-        <button type="button" onclick="selectPeriod('AM')" id="amBtn" class="time-select">AM</button>
-        <button type="button" onclick="selectPeriod('PM')" id="pmBtn" class="time-select">PM</button>
-        <div id="periodConfirmation" style="margin-bottom: 10px;"></div>
+    <form onsubmit="submitBooking(event)">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="text" id="phone" placeholder="Phone" required />
+      <input type="date" id="date" required />
+      <input type="text" id="timeInput" placeholder="Enter time" maxlength="5" oninput="formatTimeInput()" required />
+      <div>
+        <button type="button" onclick="selectPeriod('AM')" id="amBtn">AM</button>
+        <button type="button" onclick="selectPeriod('PM')" id="pmBtn">PM</button>
+        <div id="periodConfirmation"></div>
       </div>
-      <input type="hidden" id="timePeriod" value="" />
-      <label>Select Hairstyle Type:
-        <select id="hairstyleType" required>
-          <option value="NONE">NONE</option>
-          <option value="BRAIDS">BRAIDS</option>
-          <option value="LOCKS">LOCKS</option>
-          <option value="WIGS">WIGS</option>
-          <option value="CORN ROW">CORN ROW</option>
-          <option value="HAIR CUT">HAIR CUT</option>
-          <option value="LOC MAINTENANCE">LOC MAINTENANCE</option>
-        </select>
-      </label>
-      <label>DEPOSIT $20USD TO MAKE BOOKING</label><br />
-    </label>
-      <div id="paypal-button-container"></div>
+      <input type="hidden" id="timePeriod" value="AM" />
+      <select id="hairstyleType" required>
+        <option value="NONE">NONE</option>
+        <option value="BRAIDS">BRAIDS</option>
+        <option value="LOCKS">LOCKS</option>
+        <option value="WIGS">WIGS</option>
+        <option value="CORN ROW">CORN ROW</option>
+        <option value="HAIR CUT">HAIR CUT</option>
+        <option value="LOC MAINTENANCE">LOC MAINTENANCE</option>
+      </select>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+  <input type="checkbox" id="lateAgreement" required />
+  <label for="lateAgreement">I agree to pay 25% extra if I am late</label>
+</div>
+      <button type="submit">Book Now</button>
     </form>
+    <p id="bookingMessage"></p>
   </div>
 
   <script>
@@ -268,7 +276,7 @@
       apiKey: "AIzaSyAKXJ18jbcTbl-Q6OlfORc7iuLFX7rKCG4",
       authDomain: "dazzeld-nails.firebaseapp.com",
       projectId: "dazzeld-nails",
-      storageBucket: "dazzeld-nails.appspot.com",
+      storageBucket: "dazzeld-nails.firebasestorage.app",
       messagingSenderId: "786223907397",
       appId: "1:786223907397:web:b42ecefaa7967807c6d92c"
     };
@@ -283,169 +291,117 @@
       document.getElementById('menu').classList.remove('show');
     }
 
-    function showSection(sectionId) {
-      document.querySelectorAll('.content-section').forEach(section => {
-        section.classList.remove('active');
-      });
-      const sectionToShow = document.getElementById(sectionId);
-      if (sectionToShow) {
-        sectionToShow.classList.add('active');
-        if (sectionId === 'gallerySection') {
-          loadGallery('galleryDisplay');
-          sectionToShow.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    }
-
-    function login() {
-      const email = prompt('Enter admin email:');
-      const password = prompt('Enter admin password:');
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => window.location.href = 'dashboard.html')
-        .catch(error => alert('Authentication failed: ' + error.message));
+    function showSection(id) {
+      document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id === 'gallerySection') loadGallery('galleryDisplay');
     }
 
     function formatTimeInput() {
-      let input = document.getElementById('timeInput');
+      const input = document.getElementById('timeInput');
       let value = input.value.replace(/\D/g, '');
       if (value.length <= 2) input.value = value;
-      else if (value.length === 3) input.value = `${value.slice(0, 1)}:${value.slice(1)}`;
+      else if (value.length === 3) input.value = `${value[0]}:${value.slice(1)}`;
       else if (value.length === 4) input.value = `${value.slice(0, 2)}:${value.slice(2)}`;
     }
 
     function selectPeriod(period) {
       document.getElementById('timePeriod').value = period;
+      document.getElementById('amBtn').style.display = 'none';
+      document.getElementById('pmBtn').style.display = 'none';
       document.getElementById('periodConfirmation').innerText = `You selected ${period}`;
-      document.getElementById('amBtn').classList.remove('selected');
-      document.getElementById('pmBtn').classList.remove('selected');
-      if (period === 'AM') {
-        document.getElementById('amBtn').classList.add('selected');
-      } else {
-        document.getElementById('pmBtn').classList.add('selected');
-      }
-      checkFormComplete();
     }
 
     function convertToMinutes(timeStr) {
-      if (!timeStr) return null;
-      let [time, period] = timeStr.split(' ');
-      if (!period) return null;
-      let [hours, minutes] = time.split(':').map(Number);
-      if (period === 'PM' && hours !== 12) hours += 12;
-      if (period === 'AM' && hours === 12) hours = 0;
-      return hours * 60 + minutes;
+      const [time, period] = timeStr.split(' ');
+      let [h, m] = time.split(':').map(Number);
+      if (period === 'PM' && h !== 12) h += 12;
+      if (period === 'AM' && h === 12) h = 0;
+      return h * 60 + m;
     }
 
-    const businessHours = {
-      Sunday: null,
-      Monday: { open: '8:30 AM', close: '6:00 PM' },
-      Tuesday: { open: '8:30 AM', close: '6:00 PM' },
-      Wednesday: { open: '8:30 AM', close: '6:00 PM' },
-      Thursday: { open: '8:30 AM', close: '6:00 PM' },
-      Friday: { open: '9:00 AM', close: '7:00 PM' },
-      Saturday: { open: '9:00 AM', close: '7:00 PM' },
-    };
+    function validateTimeSlot(date, time) {
+      const dayName = new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' });
+      const hours = {
+        Sunday: null,
+        Monday: { open: '8:30 AM', close: '6:00 PM' },
+        Tuesday: { open: '8:30 AM', close: '6:00 PM' },
+        Wednesday: { open: '8:30 AM', close: '6:00 PM' },
+        Thursday: { open: '8:30 AM', close: '6:00 PM' },
+        Friday: { open: '9:00 AM', close: '7:00 PM' },
+        Saturday: { open: '9:00 AM', close: '7:00 PM' }
+      };
+      const config = hours[dayName];
+      if (!config) return Promise.resolve(false);
+      const selected = convertToMinutes(time);
+      const open = convertToMinutes(config.open);
+      const close = convertToMinutes(config.close);
+      if (selected < open || selected >= close) return Promise.resolve(false);
+      const service = document.getElementById('hairstyleType').value;
+      let buffer = 30;
+      if (service === 'BRAIDS') buffer = 90;
+      else if (service === 'LOCKS') buffer = 45;
+      else if (service === 'WIGS') buffer = 30;
 
-    async function validateTimeSlot(date, selectedTime, hairstyleType) {
-      const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
-      const business = businessHours[dayName];
-      if (!business) return false;
-      const selectedMinutes = convertToMinutes(selectedTime);
-      if (selectedMinutes === null) return false;
-      const openMinutes = convertToMinutes(business.open);
-      const closeMinutes = convertToMinutes(business.close);
-      if (selectedMinutes < openMinutes || selectedMinutes >= closeMinutes) return false;
-      const unavailSnapshot = await db.collection('unavailableDays').where('date', '==', date).get();
-      for (const doc of unavailSnapshot.docs) {
-        const data = doc.data();
-        const start = convertToMinutes(data.startTime);
-        const end = convertToMinutes(data.endTime);
-        if (data.allDay || (selectedMinutes >= start && selectedMinutes <= end)) return false;
-      }
-      const bookingsSnapshot = await db.collection('bookings').where('date', '==', date).get();
-      const buffer = hairstyleType !== 'NONE' ? 60 : 0;
-      for (const doc of bookingsSnapshot.docs) {
-        const bookedMinutes = convertToMinutes(doc.data().time);
-        if (Math.abs(selectedMinutes - bookedMinutes) < buffer) return false;
-      }
-      return true;
-    }
-
-    function checkFormComplete() {
-      const name = document.getElementById('name').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const date = document.getElementById('date').value.trim();
-      const timeInput = document.getElementById('timeInput').value.trim();
-      const period = document.getElementById('timePeriod').value.trim();
-      const hairstyle = document.getElementById('hairstyleType').value.trim();
-      const complete = name && phone && date && timeInput && period && hairstyle;
-      const paypalContainer = document.querySelector('#paypal-button-container');
-      paypalContainer.style.pointerEvents = complete ? 'auto' : 'none';
-      paypalContainer.style.opacity = complete ? '1' : '0.5';
-    }
-
-    ['name', 'phone', 'date', 'timeInput', 'timePeriod', 'hairstyleType'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('input', checkFormComplete);
-    });
-
-    paypal.Buttons({
-      createOrder: function(data, actions) {
-        return actions.order.create({ purchase_units: [{ amount: { value: '3.00' } }] });
-      },
-      onApprove: async function(data, actions) {
-        const name = document.getElementById('name').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const date = document.getElementById('date').value;
-        const timeInput = document.getElementById('timeInput').value.trim();
-        const period = document.getElementById('timePeriod').value;
-        const hairstyle = document.getElementById('hairstyleType').value;
-        if (!name || !phone || !date || !timeInput || !period) {
-          alert("Please complete the form.");
-          return;
+      return db.collection('bookings').where('date', '==', date).get().then(snapshot => {
+        for (const doc of snapshot.docs) {
+          const booked = convertToMinutes(doc.data().time);
+          if (Math.abs(selected - booked) < buffer) return false;
         }
-        const time = `${timeInput} ${period}`;
-        const isValid = await validateTimeSlot(date, time, hairstyle);
-        if (!isValid) {
-          alert("Selected time is not available.");
-          return;
-        }
-        return actions.order.capture().then(async function(details) {
-          await db.collection('bookings').add({ name, phone, date, time, service: hairstyle });
-          const msg = `Hello, I'd like to book:%0AName: ${name}%0APhone: ${phone}%0ADate: ${date}%0ATime: ${time}%0AService: ${hairstyle}`;
-          window.location.href = `https://wa.me/18763422293?text=${msg}`;
+        return true;
+      });
+    }
+
+    function submitBooking(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const date = document.getElementById('date').value;
+      const time = `${document.getElementById('timeInput').value} ${document.getElementById('timePeriod').value}`;
+      const service = document.getElementById('hairstyleType').value;
+
+      validateTimeSlot(date, time).then(valid => {
+        if (!valid) return alert("Selected time is unavailable.");
+        db.collection('bookings').add({ name, phone, date, time, service }).then(() => {
+          const msg = `Hello, I'd like to book:\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${service}`;
+          window.location.href = `https://wa.me/18763422293?text=${encodeURIComponent(msg)}`;
         });
-      },
-      onError: function(err) {
-        alert("An error occurred during payment.");
-        console.error(err);
-      }
-    }).render('#paypal-button-container');
+      });
+    }
 
     function loadGallery(containerId) {
       const container = document.getElementById(containerId);
+      container.innerHTML = '';
       db.collection('gallery').onSnapshot(snapshot => {
         container.innerHTML = '';
-        const categories = {};
+        const grouped = {};
         snapshot.forEach(doc => {
           const { url, category = 'Uncategorized' } = doc.data();
-          if (!categories[category]) categories[category] = [];
-          categories[category].push(url);
+          if (!grouped[category]) grouped[category] = [];
+          grouped[category].push(url);
         });
-        for (const cat in categories) {
-          container.innerHTML += `<div class="gallery-category"><h3>${cat}</h3><div class="gallery-wrapper"><div class="gallery-grid" id="gallery-${cat}"></div></div></div>`;
-          const grid = document.getElementById(`gallery-${cat}`);
-          categories[cat].forEach(url => {
-            grid.innerHTML += `<div><img src="${url}" alt="Style"></div>`;
-          });
+        for (const category in grouped) {
+          container.innerHTML += `
+            <div class="gallery-category">
+              <h3>${category}</h3>
+              <div class="gallery-grid">
+                ${grouped[category].map(url => `<img src="${url}"/>`).join('')}
+              </div>
+            </div>`;
         }
       });
     }
 
-    window.onload = () => {
-      loadGallery('galleryDisplay');
-      document.getElementById('date').min = new Date().toISOString().split('T')[0];
-    };
+    function login() {
+      const email = prompt("Enter admin email:");
+      const pass = prompt("Enter password:");
+      firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then(() => window.location.href = 'dashboard.html')
+        .catch(err => alert("Login failed: " + err.message));
+    }
+
+    window.onload = () => loadGallery('galleryDisplay');
   </script>
 </body>
+
 </html>

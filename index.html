@@ -287,19 +287,13 @@
 
 <input type="hidden" id="timePeriod" value="AM" />
 
-      <label for="pedicureType">Select Pedicure Type:</label>
-     <select id="pedicureType">
+      <label for="hairType">Select Hair Type:</label>
+<select id="hairType">
   <option value="NONE">NONE</option>
-  <option value="Regular Pedicure">Regular Pedicure</option>
-  <option value="Spa Pedicure">Spa Pedicure</option>
-  <option value="Deluxe Pedicure">Deluxe Pedicure</option>
-  <option value="Gel Pedicure">Gel Pedicure</option>
-  <option value="Paraffin Pedicure">Paraffin Pedicure</option>
-  <option value="Hot Stone Pedicure">Hot Stone Pedicure</option>
-  <option value="French Pedicure">French Pedicure</option>
-  <option value="Shellac Pedicure">Shellac Pedicure</option>
-  <option value="Fish Pedicure">Fish Pedicure</option>
-  <option value="Athletic Pedicure">Athletic Pedicure</option>
+  <option value="Locs">Locs</option>
+  <option value="Braids">Braids</option>
+  <option value="Cornrows">Cornrows</option>
+  <option value="Afro">Afro</option>
 </select>
 </div>
 
@@ -517,7 +511,10 @@ function validateTimeSlot(date, selectedTime) {
     return Promise.resolve(false);
   }
 
+  // Convert selected time to minutes for comparison
   const selectedMinutes = convertToMinutes(selectedTime);
+
+  // Check if the selected time is within business hours
   const openMinutes = convertToMinutes(business.open);
   const closeMinutes = convertToMinutes(business.close);
 
@@ -526,6 +523,17 @@ function validateTimeSlot(date, selectedTime) {
     return Promise.resolve(false);
   }
 
+  // Add buffer based on selected hair type
+  let buffer = 0;
+  const hairType = document.getElementById('hairType').value;
+  if (hairType !== 'NONE') {
+    if (hairType === 'Locs') buffer += 60;  // 1 hour buffer for Locs
+    if (hairType === 'Braids') buffer += 45;  // 45 minutes buffer for Braids
+    if (hairType === 'Cornrows') buffer += 30;  // 30 minutes buffer for Cornrows
+    if (hairType === 'Afro') buffer += 60;  // 1 hour buffer for Afro hairstyle
+  }
+
+  // Check against unavailable days (e.g., closed days or booked days)
   return db.collection('unavailableDays').where('date', '==', date).get()
     .then((unavailableSnapshot) => {
       let isUnavailable = false;
@@ -533,12 +541,14 @@ function validateTimeSlot(date, selectedTime) {
       unavailableSnapshot.forEach((doc) => {
         const data = doc.data();
 
+        // If the day is unavailable or the time conflicts with an existing booking
         if (data.allDay) {
           isUnavailable = true;
         } else {
           const startMinutes = convertToMinutes(data.startTime);
           const endMinutes = convertToMinutes(data.endTime);
 
+          // If the time conflicts with an existing booking
           if (selectedMinutes >= startMinutes && selectedMinutes <= endMinutes) {
             isUnavailable = true;
           }
@@ -546,32 +556,36 @@ function validateTimeSlot(date, selectedTime) {
       });
 
       if (isUnavailable) {
+        alert("This date is unavailable. Please select another date.");
         return false;
       }
 
+      // Check if the selected time overlaps with any existing bookings
       return db.collection('bookings').where('date', '==', date).get()
         .then((querySnapshot) => {
+          let isAvailable = true;
 
-          // Calculate buffer based on selected service
-          const hairstyleType = document.getElementById('pedicureType').value;
-        
-          let buffer = 0;
-
-          if (hairstyleType !== 'NONE') {
-
-          for (let doc of querySnapshot.docs) {
+          // Check each booking's time and buffer overlap
+          querySnapshot.docs.forEach((doc) => {
             let bookedTime = doc.data().time.trim().replace(/\s+/g, ' ');
             let bookedMinutes = convertToMinutes(bookedTime);
 
             if (Math.abs(selectedMinutes - bookedMinutes) < buffer) {
-              return false; // Conflict
+              isAvailable = false; // Time overlap found
             }
+          });
+
+          if (!isAvailable) {
+            alert('This time is not available. Please choose another time.');
+            return false;
           }
 
-          return true; // No conflict
+          // If no conflicts found, return true (time is available)
+          return true;
         });
     });
 }
+
 
 function submitBooking(event) {
   event.preventDefault();
@@ -583,41 +597,53 @@ function submitBooking(event) {
   const timePeriod = document.getElementById('timePeriod').value;
   const time = `${timeInput} ${timePeriod}`;
 
-  const hairstyleType = document.getElementById('pedicureType').value;
+  // Call validateTimeSlot before proceeding with the booking
+  validateTimeSlot(date, time).then((isAvailable) => {
+    if (!isAvailable) {
+      return; // Don't proceed with booking if the time is not available
+    }
 
-  validateTimeSlot(date, time)
-    .then((isAvailable) => {
-      if (!isAvailable) {
-        alert('This time is not available. Please choose another time.');
-        return;
-      }
+    // Proceed with booking if time is available
+    const pedicureType = document.getElementById('pedicureType').value;
+    const manicureType = document.getElementById('manicureType').value;
+    const nailExtensionType = document.getElementById('nailExtensionType').value;
+    const hairType = document.getElementById('hairType').value;
 
-      // Save booking to Firestore
-      db.collection('bookings').add({
-        name: name,
-        phone: phone,
-        date: date,
-        time: time,
-        service: service
-      })
-        .then(() => {
-          // Send WhatsApp message after saving booking
-          const message = `Hello, I would like to book an appointment.\n\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${service}`;
-          const encodedMessage = encodeURIComponent(message);
-          const whatsappNumber = '18763422293';
-          const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    // Build service description
+    let service = `Pedicure: ${pedicureType}, Manicure: ${manicureType}`;
+    if (nailExtensionType !== 'NONE') {
+      service += `, Nail Extension: ${nailExtensionType}`;
+    }
+    if (hairType !== 'NONE') {
+      service += `, Hair Type: ${hairType}`;
+    }
 
-          window.location.href = whatsappUrl;
-        })
-        .catch((error) => {
-          console.error('Error saving booking:', error);
-          alert('Error saving booking. Please try again.');
-        });
+    // Save booking to Firestore
+    db.collection('bookings').add({
+      name: name,
+      phone: phone,
+      date: date,
+      time: time,
+      service: service
+    })
+    .then(() => {
+      // Send a WhatsApp message after saving the booking
+      const message = `Hello, I would like to book an appointment.\n\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${service}`;
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappNumber = '18763422293';
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+      window.location.href = whatsappUrl; // Open WhatsApp with the booking details
     })
     .catch((error) => {
-      console.error('Error during time validation:', error);
-      alert('Error validating time. Please try again.');
+      console.error('Error saving booking:', error);
+      alert('Error saving booking. Please try again.');
     });
+  })
+  .catch((error) => {
+    console.error('Error during time validation:', error);
+    alert('Error validating time. Please try again.');
+  });
 }
 
     function showSection(sectionId) {

@@ -634,17 +634,22 @@ function submitBooking(event) {
 }
 
     function showSection(sectionId) {
-  document.querySelectorAll('.content-section').forEach(section =>
-    section.classList.remove('active')
-  );
-  document.getElementById(sectionId).classList.add('active');
+    // Hide all sections first
+    document.querySelectorAll('.content-section').forEach(section =>
+        section.classList.remove('active') // Remove 'active' class from all sections
+    );
 
-  if (sectionId === 'gallerySection') {
-    loadGallery('galleryDisplay');
-  } else if (sectionId === 'reviewsSection') {
-    loadReviews(currentUser); // ✅ Pass the user here
-  }
+    // Add 'active' class to the selected section
+    document.getElementById(sectionId).classList.add('active'); 
+
+    // Optionally load specific content when certain sections are shown
+    if (sectionId === 'bookingSection') {
+        // Load anything specific to the booking section if needed
+    } else if (sectionId === 'reviewsSection') {
+        loadReviews(currentUser); // This loads the reviews when the reviews section is shown
+    }
 }
+
 
 // Assume firebase is initialized and 'db' and 'auth' are set up
 

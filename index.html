@@ -503,20 +503,15 @@ const businessHours = {
 };
 
 function validateTimeSlot(date, selectedTime) {
-function validateTimeSlot(date, selectedTime) {
   const dayName = new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' });
   const business = businessHours[dayName];
 
-  // Check if business is open on the selected day
   if (!business) {
     alert(`We are closed on Sundays. Please select another day.`);
     return Promise.resolve(false);
   }
 
-  // Convert selected time to minutes for comparison
   const selectedMinutes = convertToMinutes(selectedTime);
-
-  // Check if the selected time is within business hours
   const openMinutes = convertToMinutes(business.open);
   const closeMinutes = convertToMinutes(business.close);
 
@@ -543,14 +538,12 @@ function validateTimeSlot(date, selectedTime) {
       unavailableSnapshot.forEach((doc) => {
         const data = doc.data();
 
-        // If the day is unavailable or the time conflicts with an existing booking
         if (data.allDay) {
           isUnavailable = true;
         } else {
           const startMinutes = convertToMinutes(data.startTime);
           const endMinutes = convertToMinutes(data.endTime);
 
-          // If the time conflicts with an existing booking
           if (selectedMinutes >= startMinutes && selectedMinutes <= endMinutes) {
             isUnavailable = true;
           }
@@ -562,19 +555,16 @@ function validateTimeSlot(date, selectedTime) {
         return false;
       }
 
-      // Check if the selected time overlaps with any existing bookings
       return db.collection('bookings').where('date', '==', date).get()
         .then((querySnapshot) => {
           let isAvailable = true;
 
-          // Check each booking's time and buffer overlap
           querySnapshot.docs.forEach((doc) => {
             let bookedTime = doc.data().time.trim().replace(/\s+/g, ' ');
             let bookedMinutes = convertToMinutes(bookedTime);
 
-            // Check if the selected time conflicts with an existing booking, considering the buffer
             if (Math.abs(selectedMinutes - bookedMinutes) < buffer) {
-              isAvailable = false; // Time overlap found
+              isAvailable = false;
             }
           });
 
@@ -583,13 +573,11 @@ function validateTimeSlot(date, selectedTime) {
             return false;
           }
 
-          // If no conflicts found, return true (time is available)
           return true;
         });
     });
 }
 
-function submitBooking(event) {
 function submitBooking(event) {
   event.preventDefault();
 

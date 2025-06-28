@@ -503,9 +503,11 @@ const businessHours = {
 };
 
 function validateTimeSlot(date, selectedTime) {
+function validateTimeSlot(date, selectedTime) {
   const dayName = new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' });
   const business = businessHours[dayName];
 
+  // Check if business is open on the selected day
   if (!business) {
     alert(`We are closed on Sundays. Please select another day.`);
     return Promise.resolve(false);
@@ -570,6 +572,7 @@ function validateTimeSlot(date, selectedTime) {
             let bookedTime = doc.data().time.trim().replace(/\s+/g, ' ');
             let bookedMinutes = convertToMinutes(bookedTime);
 
+            // Check if the selected time conflicts with an existing booking, considering the buffer
             if (Math.abs(selectedMinutes - bookedMinutes) < buffer) {
               isAvailable = false; // Time overlap found
             }
@@ -586,7 +589,7 @@ function validateTimeSlot(date, selectedTime) {
     });
 }
 
-
+function submitBooking(event) {
 function submitBooking(event) {
   event.preventDefault();
 
@@ -604,18 +607,14 @@ function submitBooking(event) {
     }
 
     // Proceed with booking if time is available
-    const pedicureType = document.getElementById('pedicureType').value;
-    const manicureType = document.getElementById('manicureType').value;
-    const nailExtensionType = document.getElementById('nailExtensionType').value;
     const hairType = document.getElementById('hairType').value;
 
-    // Build service description
-    let service = `Pedicure: ${pedicureType}, Manicure: ${manicureType}`;
-    if (nailExtensionType !== 'NONE') {
-      service += `, Nail Extension: ${nailExtensionType}`;
-    }
+    // Build service description based on the selected hair type
+    let service = '';
     if (hairType !== 'NONE') {
-      service += `, Hair Type: ${hairType}`;
+      service = `Hair Type: ${hairType}`;
+    } else {
+      service = "No hair service selected";
     }
 
     // Save booking to Firestore

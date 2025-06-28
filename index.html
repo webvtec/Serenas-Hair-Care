@@ -288,13 +288,16 @@
         <input type="hidden" id="timePeriod" value="AM" />
 
         <label for="hairType">Select Hair Type:</label>
-        <select id="hairType">
+        <select id="hairType" onchange="showEstimateTime()">
             <option value="NONE">NONE</option>
             <option value="Locs">Locs</option>
             <option value="Braids">Braids</option>
             <option value="Cornrows">Cornrows</option>
             <option value="Afro">Afro</option>
         </select>
+
+        <!-- Display Estimated Time -->
+        <p id="estimateTimeMessage" style="color: #6200ea; font-weight: bold;"></p>
 
         <button type="submit">Book Now</button>
     </form>
@@ -500,6 +503,41 @@ const businessHours = {
   'Friday': { open: '9:00 AM', close: '7:00 PM' },
   'Saturday': { open: '9:00 AM', close: '7:00 PM' }
 };
+
+    // This function is triggered when the user selects a hair type
+function showEstimateTime() {
+    const hairType = document.getElementById('hairType').value;
+    const estimateMessage = document.getElementById('estimateTimeMessage');
+
+    // Set default message if no hair type is selected
+    if (hairType === 'NONE') {
+        estimateMessage.innerHTML = '';
+        return;
+    }
+
+    // Estimate time for each hair type
+    let timeEstimate;
+    switch (hairType) {
+        case 'Locs':
+            timeEstimate = 'Approximately 2 hours';
+            break;
+        case 'Braids':
+            timeEstimate = 'Approximately 1.5 hours';
+            break;
+        case 'Cornrows':
+            timeEstimate = 'Approximately 1 hour';
+            break;
+        case 'Afro':
+            timeEstimate = 'Approximately 2 hours';
+            break;
+        default:
+            timeEstimate = '';
+            break;
+    }
+
+    // Display the estimated time in the paragraph
+    estimateMessage.innerHTML = `Estimated Time: ${timeEstimate}`;
+}
 
 function validateTimeSlot(date, selectedTime) {
   const dayName = new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long' });

@@ -73,6 +73,17 @@
       margin-top: 1rem;
       user-select: none;
     }
+    .forgot-password {
+      margin-top: 1rem;
+    }
+    .forgot-password a {
+      color: #6200ea;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -89,17 +100,22 @@
     <hr />
 
     <p id="status"></p>
+
+    <!-- Forgot Password Link -->
+    <div class="forgot-password">
+      <a href="javascript:void(0);" id="forgotPasswordLink">Forgot Password?</a>
+    </div>
   </div>
 
   <script>
     const firebaseConfig = {
-  apiKey: "AIzaSyChRsOpY7cKI9bZRShd2xdaI2c32PMegao",
-  authDomain: "ttthairstylist-walk-in-pay.firebaseapp.com",
-  projectId: "ttthairstylist-walk-in-pay",
-  storageBucket: "ttthairstylist-walk-in-pay.firebasestorage.app",
-  messagingSenderId: "814414276994",
-  appId: "1:814414276994:web:824311282ff087fd06079b"
-};
+      apiKey: "AIzaSyChRsOpY7cKI9bZRShd2xdaI2c32PMegao",
+      authDomain: "ttthairstylist-walk-in-pay.firebaseapp.com",
+      projectId: "ttthairstylist-walk-in-pay",
+      storageBucket: "ttthairstylist-walk-in-pay.firebasestorage.app",
+      messagingSenderId: "814414276994",
+      appId: "1:814414276994:web:824311282ff087fd06079b"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -109,7 +125,26 @@
     const statusText = document.getElementById('status');
     const loginBtn = document.getElementById('loginBtn');
     const signupBtn = document.getElementById('signupBtn');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
 
+    // Forgot Password Flow
+    forgotPasswordLink.addEventListener('click', () => {
+      const email = emailInput.value.trim();
+      if (!email) {
+        statusText.textContent = 'Please enter your email to reset password.';
+        return;
+      }
+
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          statusText.textContent = 'Password reset email sent!';
+        })
+        .catch(err => {
+          statusText.textContent = `Error: ${err.message}`;
+        });
+    });
+
+    // Login Functionality
     loginBtn.addEventListener('click', () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value;
@@ -128,6 +163,7 @@
         });
     });
 
+    // Sign Up Functionality
     signupBtn.addEventListener('click', () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value;

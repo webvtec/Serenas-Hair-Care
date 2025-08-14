@@ -748,17 +748,21 @@ function submitBooking(event) {
     function showSection(sectionId) {
     // Hide all sections first
     document.querySelectorAll('.content-section').forEach(section =>
-        section.classList.remove('active') // Remove 'active' class from all sections
+        section.classList.remove('active')
     );
 
     // Add 'active' class to the selected section
     document.getElementById(sectionId).classList.add('active'); 
 
-    // Optionally load specific content when certain sections are shown
-    if (sectionId === 'bookingSection') {
-        // Load anything specific to the booking section if needed
-    } else if (sectionId === 'reviewsSection') {
-        loadReviews(currentUser); // This loads the reviews when the reviews section is shown
+    // Load content based on section
+    if (sectionId === 'gallerySection') {
+        loadGallery('galleryDisplay'); // ✅ Reload designs every time you open Designs
+    } 
+    else if (sectionId === 'bookingSection') {
+        // Add booking-specific load logic if needed
+    } 
+    else if (sectionId === 'reviewsSection') {
+        loadReviews(currentUser);
     }
 }
 

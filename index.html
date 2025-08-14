@@ -633,50 +633,79 @@ function submitBooking(event) {
   const timePeriod = document.getElementById('timePeriod').value;
   const time = `${timeInput} ${timePeriod}`;
 
-  // Call validateTimeSlot before proceeding with the booking
-  validateTimeSlot(date, time).then((isAvailable) => {
-    if (!isAvailable) {
-      return; // Don't proceed with booking if the time is not available
-    }
+  const pedicureType = document.getElementById('pedicureType').value;
+  const manicureType = document.getElementById('manicureType').value;
 
-    // Proceed with booking if time is available
-    const hairType = document.getElementById('hairType').value;
+  // ✅ New: Get Nail Extension Type and Length
+  const nailExtensionType = document.getElementById('nailExtensionType').value;
+  let extensionLength = '';
 
-    // Build service description based on the selected hair type
-    let service = '';
-    if (hairType !== 'NONE') {
-      service = `Hair Type: ${hairType}`;
-    } else {
-      service = "No hair service selected";
-    }
+  if (nailExtensionType !== 'NONE') {
+    extensionLength = document.getElementById('extensionLength').value;
+  }
 
-    // Save booking to Firestore
-    db.collection('bookings').add({
-      name: name,
-      phone: phone,
-      date: date,
-      time: time,
-      service: service
-    })
-    .then(() => {
-      // Send a WhatsApp message after saving the booking
-      const message = `Hello, I would like to book an appointment.\n\nName: ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nService: ${service}`;
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappNumber = '18763422293';
-      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+  // ✅ Build Service Description
+  let service = `Pedicure: ${pedicureType}, Manicure: ${manicureType}`;
+  if (nailExtensionType !== 'NONE') {
+    service += `, Nail Extension: ${nailExtensionType} (${extensionLength})`;
+  }
 
-      window.location.href = whatsappUrl; // Open WhatsApp with the booking details
+  validateTimeSlot(date, time)
+    .then((isAvailable) => {
+      if (!isAvailable) {
+        alert('This time is not available. Please choose another time.');
+        return;
+      }
+
+      // Save booking to Firestore
+      db.collection('bookings').add({
+        name: name,
+        phone: phone,
+        date: date,
+        time: time,
+        service: service
+      })
+        .then(() => {
+          // ✅ Send booking to Telegram instead of WhatsApp
+          const message = `📅 New Booking Request\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Date: ${date}\n⏰ Time: ${time}\n💅 Service: ${service}`;
+
+          const telegramBotToken = "YOUR_BOT_TOKEN_HERE"; // Replace with your bot token
+          const telegramChatId = "YOUR_CHAT_ID_HERE";     // Replace with your chat ID
+
+          fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: telegramChatId,
+              text: message,
+              parse_mode: "HTML"
+            })
+          })
+          .then(response => {
+            if (response.ok) {
+              alert("Booking sent successfully via Telegram!");
+            } else {
+              alert("Failed to send booking to Telegram.");
+            }
+          })
+          .catch(error => {
+            console.error("Error sending to Telegram:", error);
+            alert("Error sending booking to Telegram.");
+          });
+
+        })
+        .catch((error) => {
+          console.error('Error saving booking:', error);
+          alert('Error saving booking. Please try again.');
+        });
     })
     .catch((error) => {
-      console.error('Error saving booking:', error);
-      alert('Error saving booking. Please try again.');
+      console.error('Error during time validation:', error);
+      alert('Error validating time. Please try again.');
     });
-  })
-  .catch((error) => {
-    console.error('Error during time validation:', error);
-    alert('Error validating time. Please try again.');
-  });
 }
+
+
 
     function showSection(sectionId) {
     // Hide all sections first

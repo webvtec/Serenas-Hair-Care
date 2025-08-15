@@ -682,20 +682,9 @@ function submitBooking(event) {
   const timePeriod = document.getElementById('timePeriod').value;
   const time = `${timeInput} ${timePeriod}`;
 
-  const pedicureType = document.getElementById('pedicureType').value;
-  const manicureType = document.getElementById('manicureType').value;
+  const hairType = document.getElementById('hairType').value;
 
-  const nailExtensionType = document.getElementById('nailExtensionType').value;
-  let extensionLength = '';
-
-  if (nailExtensionType !== 'NONE') {
-    extensionLength = document.getElementById('extensionLength').value;
-  }
-
-  let service = `Pedicure: ${pedicureType}, Manicure: ${manicureType}`;
-  if (nailExtensionType !== 'NONE') {
-    service += `, Nail Extension: ${nailExtensionType} (${extensionLength})`;
-  }
+  let service = `Hair Type: ${hairType}`;
 
   validateTimeSlot(date, time)
     .then((isAvailable) => {
@@ -712,7 +701,7 @@ function submitBooking(event) {
         service: service
       })
       .then(() => {
-        const message = `📅 New Booking Request\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Date: ${date}\n⏰ Time: ${time}\n💅 Service: ${service}`;
+        const message = `📅 New Booking Request\n\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Date: ${date}\n⏰ Time: ${time}\n💇 Service: ${service}`;
 
         const telegramBotToken = "YOUR_BOT_TOKEN_HERE";
         const telegramChatId = "YOUR_CHAT_ID_HERE";

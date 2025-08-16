@@ -548,11 +548,10 @@ function attemptAdminLogin() {
   if (email === adminEmail && password === adminPassword) {
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(() => {
-        // ✅ Clear inputs after success
-        document.getElementById('adminEmail').value = "";
-        document.getElementById('adminPassword').value = "";
-        msg.style.display = "none";
+        // ✅ Close modal immediately
+        closeAdminModal();
 
+        // ✅ Redirect to dashboard
         window.location.href = 'dashboard.html';
       })
       .catch(() => {

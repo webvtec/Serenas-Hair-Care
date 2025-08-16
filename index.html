@@ -255,7 +255,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 5px;
-  color: #E30B5C; /* Raspberry pink */  /* (COLOUR ALLOWED TO CHANGE FOR CLIENT)*/
+  color: #E30B5C; /* (COLOUR ALLOWED TO CHANGE FOR CLIENT)*/
 }
 
 .location-info p {
@@ -347,7 +347,7 @@
         <input type="text" id="timeInput" placeholder="ENTER TIME" maxlength="5" oninput="formatTimeInput()" required />
 
         <div style="margin: 10px 0;">
-            <button type="button" onclick="selectPeriod('AM')" id="amBtn" style="margin-right: 10px;">AM</button>
+            <button type="button" onclick="selectPeriod('AM')" id="amBtn" style="margin-right: 10px; colour: #007BFF; /* (COLOUR ALLOWED TO CHANGE FOR CLIENT)*/ ">AM</button>
             <button type="button" onclick="selectPeriod('PM')" id="pmBtn">PM</button>
             <div id="periodConfirmation" style="margin-bottom: 10px;"></div>
         </div>
@@ -366,14 +366,16 @@
         <!-- Display Estimated Time -->
         <p id="estimateTimeMessage" style="color: #6200ea; font-weight: bold;"></p>
 
-        <button type="submit">Book Now</button>
+        <button type="submit" style="background-color: #4CAF50;  /* (COLOUR ALLOWED TO CHANGE FOR CLIENT)*/   color: white; padding: 10px 20px; border: none; border-radius: 5px;">
+  Book Now
+</button>
     </form>
 
     <p id="bookingMessage"></p>
 </div>
 
 <div id="reviewsSection" class="content-section">
-  <h1 style="text-align:center; color:#6200ea;">CLIENT REVIEWS</h1>
+  <h1 style="text-align:center; color:#6200ea;  /* (COLOUR ALLOWED TO CHANGE FOR CLIENT)*/  ">CLIENT REVIEWS</h1>
 
 <form id="reviewForm" style="max-width:85%; margin:10px auto; text-align:center;">
     <div style="max-width: 50%; margin: 0 auto;">
@@ -393,7 +395,7 @@
     </div>
 
     <button type="submit"
-      style="background-color:#6200ea; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">SUBMIT
+      style="background-color:#6200ea; /* (COLOUR ALLOWED TO CHANGE FOR CLIENT)*/ color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">SUBMIT
       REVIEW</button>
   </form>
 

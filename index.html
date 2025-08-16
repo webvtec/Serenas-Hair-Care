@@ -470,17 +470,21 @@
   const email = prompt('Enter admin email:');
   const password = prompt('Enter admin password:');
 
-  // Check against allowed credentials first
-  if (email === 'carlanviroberts@gmail.com' && password === '@Carlanvi321') {
+  // Hard-coded admin credentials
+  const adminEmail = 'carlanviroberts@gmail.com';
+  const adminPassword = '@Carlanvi321';
+
+  if (email === adminEmail && password === adminPassword) {
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(() => {
+        // ✅ Login successful
         window.location.href = 'dashboard.html';
       })
-      .catch((error) => {
-        alert('Authentication failed: ' + error.message);
+      .catch(() => {
+        alert("You are not an admin user.");
       });
   } else {
-    alert('Access Denied: Invalid login credentials');
+    alert("You are not an admin user.");
   }
 }
 
